@@ -23,7 +23,7 @@ namespace Demo {
                     }
                 },
                 { "arry1", new JArray() {
-                    15, true, null, 
+                    15, true, null,
                     new JArray() {
                         3, 6, 9
                     },
@@ -34,7 +34,9 @@ namespace Demo {
                 }}
             };
 
-            Console.WriteLine(o.ToJson());
+            var str = "xx{x{}xx{xx{}}}xx{{{}x";
+            Json.CharPair(str, '{', '}', out int f, out int l);
+            Console.WriteLine(str + "  |  " + f + " " + l);
             Console.Read();
         }
     }
