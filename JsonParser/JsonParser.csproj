@@ -46,6 +46,7 @@
     <Compile Include="JObject.cs" />
     <Compile Include="IJValue.cs" />
     <Compile Include="Json.cs" />
+    <Compile Include="Lexer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
