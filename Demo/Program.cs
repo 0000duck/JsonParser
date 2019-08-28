@@ -9,7 +9,7 @@ using JsonParser;
 namespace Demo {
     class Program {
         static void Main(string[] args) {
-            var t = Lexer.JsonLexer.Lex(System.IO.File.ReadAllText("Files/test.json"));
+            var t = Json.Lexer.Lex(System.IO.File.ReadAllText("Files/test.json"));
             Console.Read();
         }
     }

@@ -15,7 +15,7 @@ namespace JsonParser {
             Rules.AddRange(rules);
         }
 
-        public IEnumerable<Token> Lex(string source) {
+        public List<Token> Lex(string source) {
             var tokens = new List<Token>();
             var src = source;
 
@@ -40,8 +40,8 @@ namespace JsonParser {
 
     }
 
-    public class LexRule {
-        private readonly string Name;
+    public class LexRule : IRule {
+        public string Name { get; private set; }
         private readonly Regex Pattern;
         public bool skip;
 

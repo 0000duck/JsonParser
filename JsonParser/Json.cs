@@ -22,6 +22,14 @@ namespace JsonParser {
                 new LexRule("string", "\".*?[^\\\\]\""));
         }
 
+
+        public static void Parse(string source) {
+            var tokens = Lexer.Lex(source);
+
+
+        }
+
+
     }
 
 
