@@ -41,16 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IRule.cs" />
-    <Compile Include="JArray.cs" />
-    <Compile Include="JDocument.cs" />
-    <Compile Include="JObject.cs" />
-    <Compile Include="IJValue.cs" />
     <Compile Include="Json.cs" />
+    <Compile Include="JValue.cs" />
     <Compile Include="Lexer.cs" />
-    <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RulePattern.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

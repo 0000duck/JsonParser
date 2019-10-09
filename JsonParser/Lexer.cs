@@ -15,7 +15,7 @@ namespace JsonParser {
             Rules.AddRange(rules);
         }
 
-        public List<Token> Lex(string source) {
+        public TokenList Lex(string source) {
             var tokens = new List<Token>();
             var src = source;
 
@@ -26,7 +26,7 @@ namespace JsonParser {
                     }
                     var rule = Rules[i];
                     if (rule.Match(src, out Token tok)) {
-                        src = src.Remove(tok.StartIndex, tok.Length);
+                        src = src.Remove(0, tok.Length);
                         if(!rule.skip) {
                             tokens.Add(tok);
                         }
@@ -35,12 +35,12 @@ namespace JsonParser {
                 }
             }
 
-            return tokens;
+            return new TokenList(tokens);
         }
 
     }
 
-    public class LexRule : IRule {
+    public class LexRule {
         public string Name { get; private set; }
         private readonly Regex Pattern;
         public bool skip;
@@ -60,7 +60,7 @@ namespace JsonParser {
             var m = Pattern.Match(src);
             tok = null;
             if (m.Success) {
-                tok = new Token(Name, m.Value, m.Index);
+                tok = new Token(Name, m.Value);
                 return true;
             }
             return false;
@@ -70,10 +70,52 @@ namespace JsonParser {
     public class Token {
         public readonly string Type;
         public readonly string Value;
-        public readonly int StartIndex;
         public int Length => Value.Length;
-        public Token(string t, string v, int s) {
-            Type = t; Value = v; StartIndex = s;
+        public Token(string t, string v) {
+            Type = t; Value = v;
         }
+    }
+
+    public class TokenList {
+
+        private int index = 0;
+
+        public readonly List<Token> tokens;
+
+        public Token Current => tokens[index];
+
+        public TokenList(List<Token> ts) {
+            tokens = ts;
+        }
+
+        public bool AssertNext(string type) {
+            var t = tokens[index];
+            if (t.Type == type) {
+
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public int GetLengthOfValue(string closeType) {
+            var openType = Current.Type;
+            var length = 0;
+            var i = index;
+            var track = 1;
+
+            while (track != 0) {
+                i++;
+                var e = tokens[i];
+                if (e.Type.Equals(closeType)) {
+                    track--;
+                } else if (e.Type.Equals(openType)) {
+                    track++;
+                }
+                length++;
+            }
+
+            return length;
+        }
+
     }
 }
