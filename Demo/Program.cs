@@ -9,7 +9,11 @@ using JsonParser;
 namespace Demo {
     class Program {
         static void Main(string[] args) {
-            var t = Json.Lexer.Lex(System.IO.File.ReadAllText("Files/test.json"));
+
+            var jobj = Json.Parse("{\"test\": {\"recProp1\": 60, \"teststr\": \"hello world\"}, \"test2\": true}");
+
+            Console.WriteLine(jobj.ToJsonString());
+
             Console.Read();
         }
     }

@@ -88,18 +88,42 @@ namespace JsonParser {
             tokens = ts;
         }
 
-        public bool AssertNext(string type) {
+        public bool IsMore => index < tokens.Count;
+
+        public void MoveNext() => index++;
+
+        public bool AssertNext(string type, out string value) {
             var t = tokens[index];
-            if (t.Type == type) {
-
+            if (!t.Type.Equals(type)) {
+                value = null;
+                return false;
             }
+            value = t.Value;
+            index++;
+            return true;
+        }
 
-            throw new NotImplementedException();
+        public bool AssertNext(string type) => AssertNext(type, out string value);
+
+        public bool AssertNext(out string[] values, params string[] types) {
+            values = new string[types.Length];
+            for (int i = 0; i < types.Length; i++) {
+                if (!AssertNext(types[i], out values[i])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public TokenList GetNext(int num) {
+            var res = tokens.GetRange(index, num);
+            index += num;
+            return new TokenList(res);
         }
 
         public int GetLengthOfValue(string closeType) {
             var openType = Current.Type;
-            var length = 0;
+            var length = 1;
             var i = index;
             var track = 1;
 

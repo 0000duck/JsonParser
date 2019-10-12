@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -77,43 +76,5 @@ namespace JsonParser {
         internal JNull() { }
 
         public override string ToJsonString() => "null";
-    }
-
-    public class JObject : JValue {
-
-        public override bool IsObject => true;
-
-        private readonly Dictionary<string, JValue> props = new Dictionary<string, JValue>();
-
-        public override string ToJsonString() {
-            var res = "{";
-
-            for (int i = 0; i < props.Count; i++) {
-                var e = props.ElementAt(i);
-                res += $"\"{e.Key}\": {e.Value.ToJsonString()},";
-            }
-            res = res.TrimEnd(',');
-
-            return res + "}";
-        }
-
-    }
-
-    public class JArray : JValue {
-        public override bool IsArray => true;
-
-        private readonly List<JValue> items = new List<JValue>();
-
-
-        public override string ToJsonString() {
-            var res = "[";
-
-            for (int i = 0; i < items.Count; i++) {
-                res += items[i].ToJsonString() + ",";
-            }
-            res = res.TrimEnd(',');
-
-            return res + "]";
-        }
     }
 }

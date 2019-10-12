@@ -24,9 +24,9 @@ namespace JsonParser {
                 new LexRule("string", "\".*?[^\\\\]\""));
         }
 
+        public static JValue Parse(string source) => ParseObject(Lexer.Lex(source));
 
-        public static JObject ParseObject(string source) {
-            var tokens = Lexer.Lex(source);
+        private static JObject ParseObject(TokenList tokens) {
             var jObj = new JObject();
 
 
@@ -39,10 +39,41 @@ namespace JsonParser {
              *          for single token values (string, null, bool, number) do TryParsePrimitive()
              *          else create new TokenList and parse recursively
              *      forth: there may be a comma here, if so repeat step 2
+             * 3. assert that the last token is closecurlbracket
              */
 
+            if (!tokens.AssertNext("opencurlb")) {
+                Console.WriteLine("error. given token list is not a json object"); // TODO: proper error handling...
+            }
+
+            while (true) {
+                if (tokens.AssertNext(out string[] values, "string", "colon")) {
+                    if (TryParsePrimitive(tokens.Current, out JValue value)) {
+                        jObj.Add(values[0], value);
+                        tokens.MoveNext();
+                    } else {
+                        if (tokens.Current.Type.Equals("opencurlb")) {
+                            jObj.Add(values[0], ParseObject(tokens.GetNext(tokens.GetLengthOfValue("closecurlb"))));
+                        } else if (tokens.Current.Type.Equals("opensquareb")) {
+                            jObj.Add(values[0], ParseArray(tokens.GetNext(tokens.GetLengthOfValue("closesquareb"))));
+                        }
+                    }
+                }
+
+                if (!tokens.AssertNext("comma")) {
+                    break;
+                }
+            }
+
+            if (!tokens.AssertNext("closecurlb")) {
+                Console.WriteLine("error. given token list is not a json object"); // TODO: proper error handling...
+            }
 
             return jObj;
+        }
+
+        private static JArray ParseArray(TokenList tokens) {
+            throw new NotImplementedException();
         }
 
         private static bool TryParsePrimitive(Token t, out JValue res) {
@@ -50,10 +81,8 @@ namespace JsonParser {
                 case "bool": res = new JBool(bool.Parse(t.Value)); return true;
                 case "null": res = JValue.Null; return true;
                 case "number": res = new JNumber(double.Parse(t.Value)); return true;
-                case "string": res = new JString(t.Value); return true; // possible bug with qoutes here, TODO: remove first and last double quotes.
-                default:
-                    res = null;
-                    return false;
+                case "string": res = new JString(t.Value.Substring(1, t.Value.Length - 2)); return true;
+                default: res = null; return false;
             }
         }
 
