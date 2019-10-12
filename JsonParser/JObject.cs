@@ -32,6 +32,9 @@ namespace JsonParser {
         public bool Contains(KeyValuePair<string, JValue> item) => ((IDictionary<string, JValue>)props).Contains(item);
 
         public void Add(string key, JValue value) => props.Add(key, value);
+        public void Add(string key, bool value) => props.Add(key, (JBool)value);
+        public void Add(string key, double value) => props.Add(key, (JNumber)value);
+        public void Add(string key, string value) => props.Add(key, (JString)value);
         public void Add(KeyValuePair<string, JValue> item) => ((IDictionary<string, JValue>)props).Add(item);
 
         public bool Remove(string key) => props.Remove(key);

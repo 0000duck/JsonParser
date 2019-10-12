@@ -15,7 +15,7 @@ namespace JsonParser {
         public virtual bool IsObject => false;
         public virtual bool IsArray => false;
 
-        public bool IsPrimitive => IsString || IsNumber || IsBool || IsNull;
+        public bool IsPrimitive => IsString || IsNumber || IsBool;
         public bool IsStruct => IsArray || IsObject;
 
         public abstract string ToJsonString();

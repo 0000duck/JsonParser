@@ -29,7 +29,14 @@ namespace JsonParser {
         public bool Remove(JValue item) => items.Remove(item);
 
         public void Add(JValue item) => items.Add(item);
+        public void Add(bool item) => items.Add((JBool)item);
+        public void Add(double item) => items.Add((JNumber)item);
+        public void Add(string item) => items.Add((JString)item);
+
         public void Insert(int index, JValue item) => items.Insert(index, item);
+        public void Insert(int index, bool item) => items.Insert(index, (JBool)item);
+        public void Insert(int index, double item) => items.Insert(index, (JNumber)item);
+        public void Insert(int index, string item) => items.Insert(index, (JString)item);
 
         public void Clear() => items.Clear();
         public bool Contains(JValue item) => items.Contains(item);

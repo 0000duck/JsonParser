@@ -8,6 +8,8 @@ using System.Reflection;
 namespace JsonParser {
     public static class Json {
 
+        public static readonly JValue Null = JValue.Null;
+
         public static readonly Lexer Lexer;
         static Json() {
             Lexer = new Lexer(
@@ -24,7 +26,27 @@ namespace JsonParser {
                 new LexRule("string", "\".*?[^\\\\]\""));
         }
 
-        public static JValue Parse(string source) => ParseObject(Lexer.Lex(source));
+        public static JValue ToJson(this object obj) {
+            if (obj == null) {
+                return Json.Null;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public static JValue FromFile(string path) => Parse(System.IO.File.ReadAllText(path));
+
+        public static JValue Parse(string source) {
+            var toks = Lexer.Lex(source);
+
+            if (toks.Current.Type.Equals("opencurlb")) {
+                return ParseObject(toks);
+            } else if (toks.Current.Type.Equals("opensquareb")) {
+                return ParseArray(toks);
+            }
+
+            return null;
+        }
 
         private static JObject ParseObject(TokenList tokens) {
             var jObj = new JObject();
@@ -48,14 +70,15 @@ namespace JsonParser {
 
             while (true) {
                 if (tokens.AssertNext(out string[] values, "string", "colon")) {
+                    var identifier = values[0].Substring(1, values[0].Length - 2);
                     if (TryParsePrimitive(tokens.Current, out JValue value)) {
-                        jObj.Add(values[0], value);
+                        jObj.Add(identifier, value);
                         tokens.MoveNext();
                     } else {
                         if (tokens.Current.Type.Equals("opencurlb")) {
-                            jObj.Add(values[0], ParseObject(tokens.GetNext(tokens.GetLengthOfValue("closecurlb"))));
+                            jObj.Add(identifier, ParseObject(tokens.GetNext(tokens.GetLengthOfValue("closecurlb"))));
                         } else if (tokens.Current.Type.Equals("opensquareb")) {
-                            jObj.Add(values[0], ParseArray(tokens.GetNext(tokens.GetLengthOfValue("closesquareb"))));
+                            jObj.Add(identifier, ParseArray(tokens.GetNext(tokens.GetLengthOfValue("closesquareb"))));
                         }
                     }
                 }
@@ -73,7 +96,33 @@ namespace JsonParser {
         }
 
         private static JArray ParseArray(TokenList tokens) {
-            throw new NotImplementedException();
+            var jary = new JArray();
+
+            if (!tokens.AssertNext("opensquareb")) {
+                Console.WriteLine("error. given token list is not a json array"); // TODO: proper error handling...
+            }
+
+            while (true) {
+
+                if (TryParsePrimitive(tokens.Current, out JValue value)) {
+                    jary.Add(value);
+                    tokens.MoveNext();
+                } else if (tokens.Current.Type.Equals("opencurlb")) {
+                    jary.Add(ParseObject(tokens.GetNext(tokens.GetLengthOfValue("closecurlb"))));
+                } else if (tokens.Current.Type.Equals("opensquareb")) {
+                    jary.Add(ParseArray(tokens.GetNext(tokens.GetLengthOfValue("closesquareb"))));
+                }
+
+                if (!tokens.AssertNext("comma")) {
+                    break;
+                }
+            }
+
+            if (!tokens.AssertNext("closesquareb")) {
+                Console.WriteLine("error. given token list is not a json array"); // TODO: proper error handling...
+            }
+
+            return jary;
         }
 
         private static bool TryParsePrimitive(Token t, out JValue res) {
