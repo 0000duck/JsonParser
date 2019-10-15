@@ -42,8 +42,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="JArray.cs" />
+    <Compile Include="JBool.cs" />
+    <Compile Include="JNull.cs" />
+    <Compile Include="JNumber.cs" />
     <Compile Include="JObject.cs" />
     <Compile Include="Json.cs" />
+    <Compile Include="JString.cs" />
     <Compile Include="JValue.cs" />
     <Compile Include="Lexer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

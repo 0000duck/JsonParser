@@ -23,6 +23,14 @@ namespace JsonParser {
             return res + "]";
         }
 
+        public override object ToObject() {
+            var res = new List<object>();
+            foreach (var item in this) {
+                res.Add(item.ToObject());
+            }
+            return res;
+        }
+
         public int IndexOf(JValue item) => items.IndexOf(item);
 
         public void RemoveAt(int index) => items.RemoveAt(index);

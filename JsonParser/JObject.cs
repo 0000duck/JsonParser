@@ -28,6 +28,14 @@ namespace JsonParser {
             return res + "}";
         }
 
+        public override object ToObject() {
+            var res = new Dictionary<string, object>();
+            foreach (var item in this) {
+                res.Add(item.Key, item.Value.ToObject());
+            }
+            return res;
+        }
+
         public bool ContainsKey(string key) => props.ContainsKey(key);
         public bool Contains(KeyValuePair<string, JValue> item) => ((IDictionary<string, JValue>)props).Contains(item);
 

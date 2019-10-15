@@ -22,8 +22,12 @@ namespace JsonParser {
                 new LexRule("colon", ":"),
                 new LexRule("bool", "true|false"),
                 new LexRule("null", "null"),
-                new LexRule("number", "[0-9]+(\\.[0-9]+)?"),
+                new LexRule("number", "-?[0-9]+(\\.[0-9]+)?"),
                 new LexRule("string", "\".*?[^\\\\]\""));
+        }
+
+        public static T FromJson<T>(JValue json) {
+            throw new NotImplementedException();
         }
 
         public static JValue ToJson(this object obj) {
